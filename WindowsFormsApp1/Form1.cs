@@ -19,6 +19,12 @@ namespace WindowsFormsApp1
         }
         Random rnd = new Random();
         int[] defaultArr;
+        int[] mas1;
+        int[] mas2;
+        int[] mas3;
+        static int swapCount1;
+        static int swapCount2;
+        static int swapCount3;
         //Создание и заполнение массива
         private void button1_Click(object sender, EventArgs e)
         {
@@ -30,24 +36,9 @@ namespace WindowsFormsApp1
                 defaultArr[i] = rnd.Next(startPos, endPos+1);
                 listBox1.Items.Add(defaultArr[i].ToString());
             }
-        }
-        //Сортировка пузырьком
-        static int[] BubbleSort(int[] mas)
-        {
-            int temp;
-            for (int i = 0; i < mas.Length - 1; i++)
-            {
-                for (int j = 0; j < mas.Length - i - 1; j++)
-                {
-                    if (mas[j + 1] < mas[j])
-                    {
-                        temp = mas[j + 1];
-                        mas[j + 1] = mas[j];
-                        mas[j] = temp;
-                    }
-                }
-            }
-            return mas;
+            mas1 = defaultArr;
+            mas2 = defaultArr;
+            mas3 = defaultArr;
         }
         //Метод обмена элементов
         static void Swap(ref int e1, ref int e2)
@@ -55,6 +46,22 @@ namespace WindowsFormsApp1
             var temp = e1;
             e1 = e2;
             e2 = temp;
+        }
+        //Сортировка пузырьком
+        static int[] BubbleSort(int[] mas)
+        {
+            for (int i = 0; i < mas.Length - 1; i++)
+            {
+                for (int j = 0; j < mas.Length - i - 1; j++)
+                {
+                    if (mas[j + 1] < mas[j])
+                    {
+                        Swap(ref mas[j], ref mas[j + 1]);
+                        swapCount1++;
+                    }
+                }
+            }
+            return mas;
         }
         //Сортировка вставками
         static int[] InsertionSort(int[] array)
@@ -66,14 +73,16 @@ namespace WindowsFormsApp1
                 while ((j > 1) && (array[j - 1] > key))
                 {
                     Swap(ref array[j - 1], ref array[j]);
+                    swapCount2++;
                     j--;
                 }
-
+                
                 array[j] = key;
             }
 
             return array;
         }
+
         //Сортировка Шелла
         static int[] ShellSort(int[] array)
         {
@@ -87,6 +96,7 @@ namespace WindowsFormsApp1
                     while ((j >= d) && (array[j - d] > array[j]))
                     {
                         Swap(ref array[j], ref array[j - d]);
+                        swapCount3++;
                         j = j - d;
                     }
                 }
@@ -99,15 +109,32 @@ namespace WindowsFormsApp1
 
         private void button2_Click(object sender, EventArgs e)
         {
+            System.Diagnostics.Stopwatch myStopwatch = new System.Diagnostics.Stopwatch();
+            myStopwatch.Start(); //запуск
+            BubbleSort(mas1);
+            myStopwatch.Stop(); //остановить
+            textBox4.Text = myStopwatch.Elapsed.ToString();
+            textBox7.Text = swapCount1.ToString();
+            myStopwatch.Restart(); //запуск
+            InsertionSort(mas2);
+            myStopwatch.Stop(); //остановить
+            textBox5.Text = myStopwatch.Elapsed.ToString();
+            textBox8.Text = swapCount2.ToString();
+            myStopwatch.Restart(); //запуск
+            ShellSort(mas3);
+            myStopwatch.Stop(); //остановить
+            textBox6.Text = myStopwatch.Elapsed.ToString();
+            textBox9.Text = swapCount3.ToString();
             for (int i = 0; i < defaultArr.Length; i++)
             {
-                BubbleSort(defaultArr);
-                listBox2.Items.Add(defaultArr[i]);
+                listBox2.Items.Add(mas1[i]);
+                listBox3.Items.Add(mas2[i]);
+                listBox4.Items.Add(mas3[i]);
             }
             
         }
 
-        //Thread t1 = new Thread(new ParameterizedThreadStart(BubbleSort));
+       //Thread t1 = new Thread(new ParameterizedThreadStart(BubbleSort));
         //Thread t2 = new Thread(new ParameterizedThreadStart(Swap));
         //Thread t3 = new Thread(new ParameterizedThreadStart(InsertionSort));
         //t1.Start(defaultArr);
